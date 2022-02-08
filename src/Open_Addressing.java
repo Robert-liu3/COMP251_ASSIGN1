@@ -76,8 +76,10 @@ public class Open_Addressing {
             while(i < m) {
                 index = probe(key, i);
                 if (Table[index] == key) {
-                    Table[index] = -1;
+                    Table[index] = -2;
                     return i;
+                } else if (Table[index] == -1) {
+                    return i+1;
                 }
                 i++;
             }

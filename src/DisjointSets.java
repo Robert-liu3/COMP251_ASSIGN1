@@ -3,19 +3,19 @@ import java.util.*;
 
 
 /****************************
-*
-* COMP251 template file
-*
-* Assignment 1, Question 2
-*
-*****************************/
+ *
+ * COMP251 template file
+ *
+ * Assignment 1, Question 2
+ *
+ *****************************/
 
 
 public class DisjointSets {
 
     private int[] par;
     private int[] rank;
-    
+
     /* contructor: creates a partition of n elements. */
     /* Each element is in a separate disjoint set */
     DisjointSets(int n) {
@@ -27,7 +27,7 @@ public class DisjointSets {
             }
         }
     }
-    
+
     public String toString(){
         int pari,countsets=0;
         String output = "";
@@ -51,25 +51,41 @@ public class DisjointSets {
         }
         return output;
     }
-    
+
     /* find resentative of element i */
     public int find(int i) {
-
-        /* Fill this method (The statement return 0 is here only to compile) */
-        return 0;
-        
+        if (par[i] == i) {
+            return i;
+        } else {
+            par[i] = find(par[i]);
+            return par[i];
+        }
     }
 
     /* merge sets containing elements i and j */
     public int union(int i, int j) {
-    
-        /* Fill this method (The statement return 0 is here only to compile) */
+        if (rank[find(i)] == rank[find(j)]) {
+            par[find(i)] = find(j);
+            rank[find(j)] ++;
+            return 0;
+        }
+        else if (rank[find(i)] < rank[find(j)]) {
+            par[find(i)] = find(j);
+            rank[find(j)] ++;
+            return find(j);
+        }
+        else if (rank[find(j)] < rank[find(i)]) {
+            par[find(j)] = find(i);
+            rank[find(i)] ++;
+            return find(i);
+        }
         return 0;
-        
+
+
     }
-    
+
     public static void main(String[] args) {
-        
+
         DisjointSets myset = new DisjointSets(6);
         System.out.println(myset);
         System.out.println("-> Union 2 and 3");
@@ -90,7 +106,7 @@ public class DisjointSets {
         System.out.println("-> Union 2 and 4");
         myset.union(2,4);
         System.out.println(myset);
-        
+
     }
 
 }
