@@ -3,17 +3,12 @@ import java.util.*;
 
 public class A1_Q3 {
 
-	public static int k = 0;
-	public static int[] rank;
-	public static HashMap<String, HashMap<String, Integer>> postPerPerson = new HashMap<String, HashMap<String, Integer>>();
-	public static HashMap<String, Integer> numPerWord = new HashMap<String, Integer>();
+	private static HashMap<String, HashMap<String, Integer>> postPerPerson = new HashMap<String, HashMap<String, Integer>>();
 
-	//public static HashMap<String, Integer> map = new HashMap<String, Integer>();
-	public String[] post;
-	
+	private static HashMap<String, Integer> numPerWord = new HashMap<String, Integer>();
+
 	public static ArrayList<String> Discussion_Board(String[] posts){
-		ArrayList<String> output = new ArrayList<String>();
-		ArrayList<String> random = new ArrayList<String>();
+		HashMap<String, Integer> newMap = new HashMap<String, Integer>();
 		String personPost;
 		for (int i = 0; i < posts.length; i++) {
 			personPost = posts[i];
@@ -32,11 +27,14 @@ public class A1_Q3 {
 		}
 		if (!postPerPerson.isEmpty()) {
 			addToNumPerWordMap();
-			output = sorter();
-			random = random();
+			ArrayList<String> output = sorter();
+			postPerPerson.clear();
+			numPerWord.clear();
+			return output;
 		}
-		return output;
+		return null;
 	}
+
 	public static void createNewMap(String[] thePost, String name, HashMap<String, Integer> map) {
 		for (int j = 1; j < thePost.length; j++) {
 			if (!map.containsKey(thePost[j])) {
@@ -48,6 +46,7 @@ public class A1_Q3 {
 			postPerPerson.put(name, map);
 		}
 	}
+
 	public static void addToMap(String[] thePost, HashMap<String, Integer> map) {
 		for (int k = 1; k < thePost.length; k++) {
 			if (!map.containsKey(thePost[k])) {
@@ -58,16 +57,12 @@ public class A1_Q3 {
 			}
 		}
 	}
+
 	public static void addToNumPerWordMap() {
 		//getting the FIRST person's different words
 		Map.Entry<String,HashMap<String, Integer>> mapEntry = postPerPerson.entrySet().iterator().next();
 		String mapEntryName = mapEntry.getKey();
 		HashMap<String, Integer> map = postPerPerson.get(mapEntryName);
-		//creating iterator for each word
-		//Iterator allWords = map.entrySet().iterator();
-		//creating iterator for each person
-		//Iterator allPersons = postPerPerson.entrySet().iterator();
-
 		//iterating through each word of ONLY THE FIRST PERSON
 		for (String key : map.keySet()) {
 
@@ -94,35 +89,27 @@ public class A1_Q3 {
 			}
 		}
 	}
+
 	public static ArrayList<String> sorter() {
-
-		Map<String, Integer> treeMap = new TreeMap<>(numPerWord);
-
-		ArrayList<Map.Entry<String,Integer>> toBeSorted = new ArrayList<Map.Entry<String,Integer>>(treeMap.entrySet());
-
-		toBeSorted.sort(Collections.reverseOrder(Comparator.comparingInt(Map.Entry::getValue)));
-
-		ArrayList<String> output = new ArrayList<String>();
-		for (Map.Entry<String,Integer> s : toBeSorted) {
-			String a = s.getKey().toString();
-			output.add(a);
-		}
+		TreeMap<String, Integer> treeMap = new TreeMap<String, Integer>(numPerWord);
+		Map treeMapSortVal = sortingTree	(treeMap);
+		ArrayList<String> output = new ArrayList<String>(treeMapSortVal.keySet());
 		return output;
 	}
-	public static ArrayList<String> random() {
-		ArrayList<String> rando = new ArrayList<String>();
-		rando.add("no");
-		rando.add("nobody");
-		rando.add("never");
-		return rando;
-	}
-//	public static Integer getKeys(String word) {
-//		for ( Integer key : words.keySet() ) {
-//			if (words.get(key).equals(word)) {
-//				return key;
-//			}
-//		}
-//		return -1;
-//	}
 
+	public static <key, val_ extends Comparable<val_> > Map<key, val_> sortingTree(final Map<key, val_> treeMap) {
+		Comparator<key> compareVal = new Comparator<key>() {
+			public int compare(key key_, key key_next) {
+				int num = treeMap.get(key_next).compareTo(treeMap.get(key_));
+				if (num == 0) {
+					return 1;
+				} else {
+					return num;
+				}
+			}
+		};
+		Map<key, val_> sortedTreeMap = new TreeMap<key, val_>(compareVal);
+		sortedTreeMap.putAll(treeMap);
+		return sortedTreeMap;
+	}
 }
